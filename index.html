@@ -19,7 +19,7 @@
 }
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Geologica,system-ui,sans-serif;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
-.shell{min-height:100vh;display:grid;grid-template-rows:auto auto 1fr auto;gap:var(--gap);padding:0 22px 10px;max-width:1920px;margin:0 auto}
+.shell{min-height:calc(100vh / var(--z,1));display:grid;grid-template-rows:auto auto 1fr auto;gap:var(--gap);padding:0 22px 10px;max-width:1920px;margin:0 auto}
 .shell.s{grid-template-rows:auto auto 1fr auto}
 header{display:flex;align-items:center;gap:16px;min-height:62px;flex-wrap:wrap}
 .brand{display:flex;align-items:center;gap:12px}
@@ -861,8 +861,12 @@ const PXA=48,PXC=6;
 let pxBars=[],pxHover=-1,pxGrow=0,pxRaf=0,pxLast=0,pxCtx=null,pxW=0,pxH=0,pxMix=null;
 const hexRgb=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
 const mixW=(rgb,t)=>'rgb('+rgb.map(v=>Math.round(v+(255-v)*t)).join(',')+')';
-function pxSize(){const c=$('pxc'),r=c.getBoundingClientRect();if(r.width<2)return false;const d=devicePixelRatio||1;
-  c.width=Math.round(r.width*d);c.height=Math.round(r.height*d);pxCtx=c.getContext('2d');pxCtx.setTransform(d,0,0,d,0,0);pxW=r.width;pxH=r.height;return true}
+function pxSize(){const c=$('pxc'),r=c.getBoundingClientRect();if(r.width<2)return false;const d=devicePixelRatio||1,lw=c.offsetWidth||r.width,lh=c.offsetHeight||r.height,f=r.width/lw;
+  c.width=Math.round(r.width*d);c.height=Math.round(r.height*d);pxCtx=c.getContext('2d');pxCtx.setTransform(d*f,0,0,d*f,0,0);pxW=lw;pxH=lh;return true}
+/* big screens: scale the whole page up to the window width (the layout is capped at 1920 px) */
+function fitScale(){const w=document.documentElement.clientWidth,z=w>1960?Math.min(2.4,w/1920):1,s=document.querySelector('.shell');
+  s.style.zoom=z>1?z:'';s.style.setProperty('--z',z>1?z:1);pxCtx=null;pxKick()}
+addEventListener('resize',fitScale);
 function pxDraw(time,dt){
   if(!pxCtx&&!pxSize())return false;
   const g=pxCtx,w=pxW,h=pxH,t=TM[tm],c=$('pxc');
@@ -908,7 +912,7 @@ function pxLoop(ts){const dt=pxLast?Math.min(.05,(ts-pxLast)/1000):0;pxLast=ts;
   if(pxDraw(ts/1000,dt))pxRaf=requestAnimationFrame(pxLoop);else{pxRaf=0;pxLast=0}}
 function pxKick(){if(view!=='trend'||pxRaf)return;pxLast=0;pxRaf=requestAnimationFrame(pxLoop)}
 (function(){const c=$('pxc');
-  c.addEventListener('pointermove',e=>{const r=c.getBoundingClientRect(),i=Math.floor((e.clientX-r.left-PXA)/((r.width-PXA)/RM().length));
+  c.addEventListener('pointermove',e=>{const r=c.getBoundingClientRect(),lw=c.offsetWidth||r.width,f=r.width/lw,i=Math.floor(((e.clientX-r.left)/f-PXA)/((lw-PXA)/RM().length));
     const nv=i>=0&&i<RM().length?i:-1;if(nv!==pxHover){pxHover=nv;pxKick()}});
   c.addEventListener('pointerleave',()=>{pxHover=-1;pxKick()});
   c.addEventListener('click',()=>{if(pxHover>=0)go(rA+pxHover,lastMV)});
@@ -974,6 +978,7 @@ function syncRange(){rf.value=rA;rt.value=rB}
 document.querySelectorAll('.cut').forEach(b=>b.addEventListener('click',()=>{if(cut===b.dataset.c)return;cut=b.dataset.c;tailOpen=false;
   const sg=document.querySelector('.sgrid');sg.classList.add('out');setTimeout(()=>{paint();sg.classList.remove('out')},150)}));
 addEventListener('keydown',e=>{if(e.target.closest&&e.target.closest('input,textarea'))return;if(view==='trend')return;if(e.key==='ArrowRight')go(cur+1,view);if(e.key==='ArrowLeft')go(cur-1,view)});
+fitScale();
 /* start: #jun, #jun/structure, #jun/structure/mgr — also #jun/mgr */
 (function(){const h=location.hash.slice(1).split('/'),i=Math.max(0,MONTHS.findIndex(m=>m.id===h[0]));
   const c=h.find(x=>['dir','mgr','part'].includes(x));if(c)cut=c;
