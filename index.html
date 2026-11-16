@@ -403,6 +403,12 @@ html[data-theme="light"] .note .lg i.lg-prev{background:linear-gradient(#3a3a3c,
 .note .lg-n{display:block;margin-top:6px;font-size:13.5px}
 .ors__flood{display:none!important}
 html:not([data-dev]) .foot .isw{display:none}
+/* thin vertical separator instead of dots */
+.vb{display:inline-block;width:1px;height:.95em;margin:0 .65em;background:currentColor;opacity:.4;vertical-align:-.14em}
+.sales .sub .l1,.sales .sub .l2,.gp .sub .l1,.gp .sub .l2{display:block}
+.sales .sub .l1,.gp .sub .l1{font-size:13.5px;opacity:.82}
+.sales .sub .l2,.gp .sub .l2{margin-top:5px;font-size:15px;font-weight:500;color:#e4e7ff;white-space:nowrap}
+.gp .sub .l2{color:#ffe9cf}
 /* standalone figures: proportional digits (tabular digits leave gaps around "1") */
 .ors__num,.ors__sub b,.tk-v,.mini .val,.lead2 .nb b,.gp .val,.best .row2 b,.conc .v,.ors__d,.tk-d{font-variant-numeric:proportional-nums;font-feature-settings:"tnum" 0,"pnum" 1}
 /* sales tile split bar: two separate segments */
@@ -632,6 +638,7 @@ const CUTS={
 };
 
 const $=id=>document.getElementById(id);
+const VB='<i class="vb"></i>';
 const usd=v=>'$'+Math.round(v).toLocaleString('ru-RU').replace(/\s/g,' ');
 const p1=v=>v.toLocaleString('ru-RU',{minimumFractionDigits:1,maximumFractionDigits:1});
 const pc=v=>p1(v).replace(',0','');
@@ -685,10 +692,10 @@ function renderFinance(i){
   const m=MONTHS[i],p=MONTHS[i-1];
   renderRings(m,p);
   $('dots').innerHTML=dotNum(usd(m.sales));$('dots').setAttribute('aria-label',usd(m.sales));
-  $('salesSub').innerHTML=`Общая стоимость проданных пакетов, ${m.bookings} ${pl(m.bookings,'бронь','брони','броней')}`+(p?`<br>${dTxt(chg(m.sales,p.sales))} к прошлому месяцу`:'');
+  $('salesSub').innerHTML=`<span class="l1">Общая стоимость проданных пакетов</span><span class="l2">${m.bookings} ${pl(m.bookings,'бронь','брони','броней')}`+(p?`${VB}${dTxt(chg(m.sales,p.sales))} к прошлому месяцу`:'')+`</span>`;
   $('bNet').style.flex=m.net;$('bGp').style.flex=m.gp;$('capNet').textContent=usd(m.net);$('capGp').textContent=usd(m.gp);
   $('gpVal').textContent=usd(m.gp);$('gpChip').textContent=`${p1(m.margin)}% от продаж`;
-  $('gpSub').innerHTML=p?`Финансовый результат месяца<br>${dTxt(chg(m.gp,p.gp))} к прошлому месяцу`:'Финансовый результат месяца';
+  $('gpSub').innerHTML=p?`<span class="l1">Финансовый результат месяца</span><span class="l2">${dTxt(chg(m.gp,p.gp))} к прошлому месяцу</span>`:'<span class="l1">Финансовый результат месяца</span>';
   $('vBk').innerHTML=`${m.bookings}<small>шт.</small>`;$('vPax').innerHTML=`${m.tourists}<small>чел.</small>`;
   $('vMg').textContent=`${p1(m.margin)}%`;$('vAvg').innerHTML=`${usd(m.avg)}<small>на туриста</small>`;
   $('dBk').innerHTML=p?dTxt(chg(m.bookings,p.bookings)):'';$('dPax').innerHTML=p?dTxt(chg(m.tourists,p.tourists)):'';$('dAvg').innerHTML=p?dTxt(chg(m.avg,p.avg)):'';
@@ -718,7 +725,7 @@ function renderFinance(i){
   if(!p){
     $('cmpTitle').textContent='Базовый месяц периода';$('cmpR').textContent='точка отсчёта';
     const sub={sales:`${m.bookings} броней`,gp:`${p1(m.margin)}% от продаж`,tourists:`${p1(m.tourists/m.bookings)} на бронь`,avg:'продажи / туристы'};
-    $('goals').innerHTML=rows.map(r=>`<div class="goal"><div class="t"><span class="gi"><span class="gb"><iconify-icon data-s="${r[0]}"></iconify-icon></span>${r[1]}</span><b>${r[2](m)}</b></div><div class="tk10" style="--f:1;--pv:2">${ticks(N,k=>k===N-1?'cur':'on')}</div><div class="s">${sub[r[0]]}, база 100%</div></div>`).join('');
+    $('goals').innerHTML=rows.map(r=>`<div class="goal"><div class="t"><span class="gi"><span class="gb"><iconify-icon data-s="${r[0]}"></iconify-icon></span>${r[1]}</span><b>${r[2](m)}</b></div><div class="tk10" style="--f:1;--pv:2">${ticks(N,k=>k===N-1?'cur':'on')}</div><div class="s">${sub[r[0]]}${VB}база 100%</div></div>`).join('');
     $('cmpNote').innerHTML=`${m.name} — первый месяц периода. Шкала заполнена полностью: это 100%, от которых считаются следующие месяцы.`;
   }else{
     $('cmpTitle').textContent=`Сравнение с ${p.ins}`;$('cmpR').textContent='к прошлому месяцу';
@@ -940,7 +947,7 @@ function renderTrend(i){
     const col=q.col[document.documentElement.dataset.theme==='light'?0:1];
     return '<div class="card tk'+(k===tm?' sel':'')+'" data-k="'+k+'" role="button" tabindex="0" style="--mc:'+col+'"><div class="tk-top"><div class="lbl"><span class="ki"><iconify-icon data-s="'+q.slot+'"></iconify-icon></span>'+q.label+'</div></div><div class="tk-v">'+q.fmt(tot)+'</div><div class="tk-d">'+(R.length>1?dTxt(chg(q.f(L),q.f(F)))+'<span class="tk-s">'+L.name.toLowerCase()+' к '+F.name.toLowerCase().replace(/й$/,'ю').replace(/ь$/,'ю')+'</span>':'<span class="flat">один месяц</span>')+'</div></div>'}).join('');
   $('tcTitle').textContent=t.label+' по месяцам';
-  $('tcSub').textContent='наведите на столбик, нажмите, чтобы открыть месяц';
+  $('tcSub').innerHTML='наведите на столбик'+VB+'нажмите, чтобы открыть месяц';
   const S=a=>a.reduce((x,y)=>x+y,0),tS=S(R.map(x=>x.sales)),tG=S(R.map(x=>x.gp)),tB=S(R.map(x=>x.bookings)),tT=S(R.map(x=>x.tourists));
   $('ttrows').innerHTML=R.map((x,j)=>'<div class="tt-row" data-i="'+(rA+j)+'" role="button" tabindex="0"><span class="mn">'+x.name+'</span><span>'+usd(x.sales)+'</span><span class="gpv">'+usd(x.gp)+'</span><span>'+p1(x.margin)+'%</span><span>'+x.bookings+'</span><span>'+x.tourists+'</span><span>'+usd(x.avg)+'</span><span class="dd">'+(rA+j?dTxt(chg(x.sales,MONTHS[rA+j-1].sales)):'—')+'</span></div>').join('')+
     '<div class="tt-row tot"><span class="mn">Всего</span><span>'+usd(tS)+'</span><span class="gpv">'+usd(tG)+'</span><span>'+p1(tG/tS*100)+'%</span><span>'+tB+'</span><span>'+tT+'</span><span>'+usd(tS/tT)+'</span><span></span></div>';
@@ -959,13 +966,13 @@ function paint(){
   document.querySelectorAll('#mode button').forEach(b=>b.classList.toggle('on',(b.dataset.m==='period')===(view==='trend')));
   if(view==='trend'){
     $('title').textContent=`${rA===rB?F0.name:F0.name+' — '+L0.name.toLowerCase()} 2026`;
-    $('subtitle').textContent=`01.${dd(F0.n)} — ${L0.days}.${dd(L0.n)}.2026, итоги за период`;
+    $('subtitle').innerHTML=`01.${dd(F0.n)} — ${L0.days}.${dd(L0.n)}.2026${VB}итоги за период`;
   }else{
     $('title').textContent=`${m.name} 2026`;
-    $('subtitle').textContent=`01.${mm} — ${m.days}.${mm}.2026, ${view==='finance'?'финансы':'структура продаж'}`;
+    $('subtitle').innerHTML=`01.${mm} — ${m.days}.${mm}.2026${VB}${view==='finance'?'финансы':'структура продаж'}`;
   }
   $('period').textContent=`01.${mm} — ${m.days}.${mm}.2026`;
-  $('footR').textContent=view==='trend'?`${RM().length} ${pl(RM().length,'месяц','месяца','месяцев')}, 2026`:`${m.name} 2026, ${cur+1} из ${MONTHS.length}`;
+  $('footR').innerHTML=view==='trend'?`${RM().length} ${pl(RM().length,'месяц','месяца','месяцев')}${VB}2026`:`${m.name} 2026${VB}${cur+1} из ${MONTHS.length}`;
   document.querySelectorAll('#months button').forEach((b,j)=>b.classList.toggle('on',j===cur));
   document.querySelectorAll('#views button').forEach(b=>b.classList.toggle('on',b.dataset.v===view));
   document.querySelectorAll('[data-view]').forEach(n=>n.hidden=n.dataset.view!==view);
