@@ -572,6 +572,14 @@ html[data-vt="nav"]::view-transition-new(root){animation:vtIn .55s cubic-bezier(
 .trow.bkr .sv{gap:2px}
 .trow.bkr .sv small{font-size:12.5px;color:var(--muted)}
 .trow.bkr .mg{font-size:12.5px}
+
+/* Реклама — те же карточки и типографика, что и в финансовом отчёте */
+.ads-hero{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin:0 0 14px}
+.ads-stat{padding:20px 22px;min-width:0}.ads-stat .val{font-size:clamp(24px,2.3vw,36px);margin-top:14px;white-space:nowrap}.ads-stat .sub{margin-top:6px}
+.ads-layout{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(260px,1fr);gap:14px}.ads-panel{padding:20px 22px;min-width:0}
+.ads-table-wrap{overflow-x:auto}.ads-table{border-collapse:collapse;width:100%;min-width:650px;text-align:left;font-size:13px}.ads-table th{color:var(--muted);font-size:11px;text-transform:uppercase;font-weight:500;letter-spacing:.04em}.ads-table td,.ads-table th{padding:12px 8px;border-bottom:1px solid var(--line)}.ads-table td:not(:first-child),.ads-table th:not(:first-child){text-align:right}.ads-table td:first-child{max-width:250px;overflow-wrap:anywhere}.ads-name{font-weight:600}.ads-type{display:block;color:var(--muted);font-size:11px;margin-top:4px}.ads-note{font-size:12px;line-height:1.55;color:var(--muted);margin-top:15px}.ads-finance{margin-top:16px;padding-top:12px;border-top:1px solid var(--line);font-size:13px;line-height:1.5}.ads-finance b{float:right}.ads-finance small{display:block;color:var(--muted);font-size:11px;margin-top:4px}.ads-source{font-size:11px;color:var(--muted);margin-top:14px;line-height:1.5}.ads-bars{display:grid;gap:12px;margin-top:16px}.ads-bar-row{display:grid;grid-template-columns:38px 1fr 80px;gap:10px;align-items:center;font-size:12px}.ads-bar{height:7px;border-radius:20px;background:var(--line);overflow:hidden}.ads-bar i{display:block;height:100%;background:linear-gradient(90deg,#ffd21f,#ff8a1f);border-radius:20px}.ads-bar-row b{text-align:right}.ads-bar-row.current{font-weight:700}
+@media(max-width:900px){.ads-hero{grid-template-columns:repeat(2,minmax(0,1fr))}.ads-layout{grid-template-columns:1fr}}
+@media(max-width:480px){.ads-stat{padding:15px}.ads-stat .val{font-size:23px}.ads-panel{padding:16px}.ads-hero{gap:9px}}
 </style>
 </head>
 <body>
@@ -583,7 +591,7 @@ html[data-vt="nav"]::view-transition-new(root){animation:vtIn .55s cubic-bezier(
     <nav class="seg" id="mode" aria-label="Режим"><button data-m="month">По месяцам</button><button data-m="period">За период</button></nav>
     <div class="seg rng" id="range"><label>с <select id="rFrom" aria-label="Начало периода"></select></label><label>по <select id="rTo" aria-label="Конец периода"></select></label></div>
     <nav class="seg months" id="months" aria-label="Месяц"></nav>
-    <nav class="seg" id="views"><button data-v="finance" class="on">Финансы</button><button data-v="structure">Структура</button></nav>
+    <nav class="seg" id="views"><button data-v="finance" class="on">Финансы</button><button data-v="structure">Структура</button><button data-v="ads">Реклама</button></nav>
     <div class="period" id="period"></div>
     <nav class="seg" id="theme" aria-label="Тема"><button data-t="dark" aria-label="Тёмная тема"><iconify-icon icon="ph:moon-light"></iconify-icon></button><button data-t="light" aria-label="Светлая тема"><iconify-icon icon="ph:sun-light"></iconify-icon></button></nav>
   </header>
@@ -616,7 +624,7 @@ html[data-vt="nav"]::view-transition-new(root){animation:vtIn .55s cubic-bezier(
       <div class="ph"><span class="no">01</span><h2>Финансы месяца</h2><span class="r">USD</span></div>
       <div class="list" id="ledger"></div>
       <div class="mirror" id="mirror"></div>
-      <div class="rest" id="rest"></div>
+      <div class="rest" id="rest"></div><div class="ads-finance" id="adsFinance"></div>
     </article>
     <article class="card panel">
       <div class="ph"><span class="no">02</span><h2 id="cmpTitle"></h2><span class="r" id="cmpR"></span></div>
@@ -651,6 +659,13 @@ html[data-vt="nav"]::view-transition-new(root){animation:vtIn .55s cubic-bezier(
     </aside>
   </section>
 
+  <!-- ===== ADS VIEW ===== -->
+  <section class="ads-hero fade" data-view="ads" hidden id="adsHero"></section>
+  <section class="ads-layout fade" data-view="ads" hidden>
+    <article class="card ads-panel"><div class="ph"><span class="no">01</span><h2>Рекламные кампании</h2><span class="r">Meta · USD</span></div><div class="ads-table-wrap"><table class="ads-table"><thead><tr><th>Кампания / цель</th><th>Расход</th><th>Переходы</th><th>Новые контакты</th></tr></thead><tbody id="adsCampaigns"></tbody></table></div><div class="ads-note">«—» — Meta не вернула показатель. Новые контакты — люди, впервые написавшие компании по данным Meta.</div></article>
+    <aside><article class="card ads-panel"><div class="ph"><span class="no">02</span><h2>Расходы по месяцам</h2><span class="r">USD</span></div><div class="ads-bars" id="adsBars"></div><div class="ads-source">Источник: Meta Ads · рекламный аккаунт Turon Tour.<br>Данные за май–октябрь 2026, выгрузка 16.11.2026. Показатели сохранены на дату выгрузки и автоматически не обновляются.</div></article></aside>
+  </section>
+
   <!-- ===== TREND VIEW ===== -->
   <section class="tkpis fade" data-view="trend" hidden id="tkpis"></section>
   <section class="tmain fade" data-view="trend" hidden>
@@ -667,8 +682,30 @@ html[data-vt="nav"]::view-transition-new(root){animation:vtIn .55s cubic-bezier(
 
   <div class="foot"><span class="isw" id="ddsw"><i>Стрелка</i><button data-d="trend">Тренд</button><button data-d="diag">Диагональ</button><button data-d="tri">Треугольник</button></span><span class="isw" id="kpisw"><i>Плитки</i><button data-k="">Сейчас</button><button data-k="ring">Orbit</button></span><span class="isw" id="glasssw"><i>Плашка</i><button data-g="">Сейчас</button><button data-g="1">Glass</button></span><span class="isw" id="barsw"><i>Полоса</i><button data-b="">Сейчас</button><button data-b="eq">Prop Firm</button><button data-b="gv">Stats Close Up</button><button data-b="glow">Свечение</button><button data-b="neon">Неон</button><button data-b="slant">Скос</button></span><span class="isw" id="iconsw"><i>Иконки</i><button data-k="solar">Solar</button><button data-k="ph">Phosphor</button><button data-k="lucide">Lucide</button><button data-k="tabler">Tabler</button><button data-k="huge">Hugeicons</button></span><span id="footR"></span></div>
 </div>
+<script src="ads-data.js"></script>
 <script>
 /* ===== данные: итоги месяцев ===== */
+const AD_MONTHS=[
+  {spend:291.25,impressions:296092,reach:217753,clicks:3176,contacts:298},
+  {spend:395.22,impressions:236821,reach:133446,clicks:5481,contacts:31},
+  {spend:585.81,impressions:508138,reach:316194,clicks:13815,contacts:82},
+  {spend:576.86,impressions:1281559,reach:781512,clicks:21296,contacts:93},
+  {spend:143.26,impressions:335827,reach:239840,clicks:1890,contacts:9},
+  {spend:270.20,impressions:116747,reach:73983,clicks:2083,contacts:205}
+];
+const money2=n=>'$'+Number(n).toLocaleString('ru-RU',{minimumFractionDigits:2,maximumFractionDigits:2});
+const intAds=n=>Number(n).toLocaleString('ru-RU');
+function renderAds(i){
+  const m=AD_MONTHS[i];
+  const cards=[['Расход на рекламу',money2(m.spend),'Meta · USD'],['Показы',intAds(m.impressions),'сколько раз показали рекламу'],['Охват',intAds(m.reach),'аккаунтов увидели рекламу'],['Переходы по ссылкам',intAds(m.clicks),'все направления'],['Новые контакты',intAds(m.contacts),'впервые написали компании']];
+  $('adsHero').innerHTML=cards.map(([label,val,sub])=>`<article class="card ads-stat"><div class="lbl">${label}</div><div class="val">${val}</div><div class="sub">${sub}</div></article>`).join('');
+  const types={OUTCOME_TRAFFIC:'Трафик',OUTCOME_LEADS:'Лиды',OUTCOME_ENGAGEMENT:'Вовлечённость',OUTCOME_SALES:'Продажи',OUTCOME_AWARENESS:'Узнаваемость'};
+  const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const campaigns=AD_CAMPAIGNS.filter(x=>Number(x.date_start.slice(5,7))===i+5).sort((a,b)=>Number(b.amount_spent.value)-Number(a.amount_spent.value));
+  $('adsCampaigns').innerHTML=campaigns.map(x=>`<tr><td><span class="ads-name">${esc(x.name)}</span><span class="ads-type">${esc(types[x.objective]||x.objective)} · ${esc(x.id.slice(-6))}</span></td><td>${money2(x.amount_spent.value)}</td><td>${x.link_click===null?'—':intAds(x.link_click)}</td><td>${x['actions:onsite_conversion.messaging_first_reply']===null?'—':intAds(x['actions:onsite_conversion.messaging_first_reply'])}</td></tr>`).join('');
+  const max=Math.max(...AD_MONTHS.map(x=>x.spend));
+  $('adsBars').innerHTML=AD_MONTHS.map((x,j)=>`<div class="ads-bar-row ${j===i?'current':''}"><span>${MONTHS[j].name.slice(0,3)}</span><span class="ads-bar"><i style="width:${x.spend/max*100}%"></i></span><b>${money2(x.spend)}</b></div>`).join('');
+}
 const MONTHS=[
   {id:'may',name:'Май',loc:'в мае',ins:'маем',days:31,n:5,sales:127732,net:119579,gp:8152,recv:127732,paid:114982,cdebt:0,bookings:26,tourists:95},
   {id:'jun',name:'Июнь',loc:'в июне',ins:'июнем',days:30,n:6,sales:93949,net:88502,gp:5417,recv:93949,paid:78557,cdebt:0,bookings:27,tourists:85},
@@ -763,6 +800,7 @@ function renderFinance(i){
     L('paid','Оплачено партнёрам',`${pc(m.paid/m.net*100)}% нетто`,usd(m.paid))+
     L('clientdebt','Долг клиентов',m.cdebt?'':'закрыт',usd(m.cdebt),m.cdebt?'warn':'')+
     L('partnerdebt','Долг партнёрам',m.pdebt?`${p1(m.pdebt/m.net*100)}% нетто`:'закрыт',usd(m.pdebt),m.pdebt?'warn':'ok');
+  $('adsFinance').innerHTML=`Расход на рекламу Meta <b>${money2(AD_MONTHS[i].spend)}</b><small>Расход не вычтен из валовой прибыли · данные Meta на 16.11.2026</small>`;
   const mx=Math.max(m.recv,m.paid);
   $('mirror').innerHTML=`<span>Пришло</span><div class="b"><i style="width:${m.recv/mx*100}%;background:var(--teal)"></i></div><b>${usd(m.recv)}</b><span>Ушло</span><div class="b"><i style="width:${m.paid/mx*100}%;background:#8a8a85"></i></div><b>${usd(m.paid)}</b>`;
   /* разница «пришло − ушло»: что из неё наше, а что ещё должны */
@@ -1029,7 +1067,7 @@ function renderTrend(i){
 let cur=-1,view='finance',lastMV='finance';
 function paint(){
   const m=MONTHS[cur],mm=String(m.n).padStart(2,'0');
-  document.title=`Turon Tour · ${m.name} 2026 · ${view==='finance'?'Финансы':view==='structure'?'Структура':'Динамика'}`;
+  document.title=`Turon Tour · ${m.name} 2026 · ${view==='finance'?'Финансы':view==='structure'?'Структура':view==='ads'?'Реклама':'Динамика'}`;
   const F0=MONTHS[rA],L0=MONTHS[rB],dd=n=>String(n).padStart(2,'0');
   document.documentElement.dataset.mode=view==='trend'?'period':'month';
   if(view==='trend')syncRange();
@@ -1039,7 +1077,7 @@ function paint(){
     $('subtitle').innerHTML=`01.${dd(F0.n)} — ${L0.days}.${dd(L0.n)}.2026${VB}итоги за период`;
   }else{
     $('title').textContent=`${m.name} 2026`;
-    $('subtitle').innerHTML=`01.${mm} — ${m.days}.${mm}.2026${VB}${view==='finance'?'финансы':'структура продаж'}`;
+    $('subtitle').innerHTML=`01.${mm} — ${m.days}.${mm}.2026${VB}${view==='finance'?'финансы':view==='ads'?'реклама':'структура продаж'}`;
   }
   $('period').textContent=`01.${mm} — ${m.days}.${mm}.2026`;
   $('footR').innerHTML=view==='trend'?`${RM().length} ${pl(RM().length,'месяц','месяца','месяцев')}${VB}2026`:`${m.name} 2026${VB}${cur+1} из ${MONTHS.length}`;
@@ -1047,9 +1085,9 @@ function paint(){
   document.querySelectorAll('#views button').forEach(b=>b.classList.toggle('on',b.dataset.v===view));
   placeThumbs();
   document.querySelectorAll('[data-view]').forEach(n=>n.hidden=n.dataset.view!==view);
-  if(view==='finance')renderFinance(cur);else if(view==='structure')renderStructure(cur);else renderTrend(cur);
+  if(view==='finance')renderFinance(cur);else if(view==='structure')renderStructure(cur);else if(view==='ads')renderAds(cur);else renderTrend(cur);
   paintIcons();
-  history.replaceState(null,'','#'+m.id+(view==='structure'?'/'+cut:view==='trend'?'/trend':''));
+  history.replaceState(null,'','#'+m.id+(view==='structure'?'/'+cut:view==='trend'?'/trend':view==='ads'?'/ads':''));
 }
 /* thumbs of segmented controls */
 function placeThumbs(){document.querySelectorAll('.seg').forEach(s=>{const on=s.querySelector(':scope>button.on');if(!on)return;
@@ -1092,7 +1130,7 @@ fitScale();
 /* start: #jun, #jun/structure, #jun/structure/mgr — also #jun/mgr */
 (function(){const h=location.hash.slice(1).split('/'),i=Math.max(0,MONTHS.findIndex(m=>m.id===h[0]));
   const c=h.find(x=>['dir','mgr','part'].includes(x));if(c)cut=c;
-  go(i,h.includes('trend')?'trend':(h.includes('structure')||c)?'structure':'finance',false)})();
+  go(i,h.includes('trend')?'trend':h.includes('ads')?'ads':(h.includes('structure')||c)?'structure':'finance',false)})();
 </script>
 </body>
 </html>
