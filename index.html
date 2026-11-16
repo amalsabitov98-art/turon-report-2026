@@ -578,6 +578,7 @@ html[data-vt="nav"]::view-transition-new(root){animation:vtIn .55s cubic-bezier(
 .ads-stat{padding:20px 22px;min-width:0}.ads-stat .val{font-size:clamp(24px,2.3vw,36px);margin-top:14px;white-space:nowrap}.ads-stat .sub{margin-top:6px}
 .ads-layout{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(260px,1fr);gap:14px}.ads-panel{padding:20px 22px;min-width:0}
 .ads-table-wrap{overflow-x:auto}.ads-table{border-collapse:collapse;width:100%;min-width:650px;text-align:left;font-size:13px}.ads-table th{color:var(--muted);font-size:11px;text-transform:uppercase;font-weight:500;letter-spacing:.04em}.ads-table td,.ads-table th{padding:12px 8px;border-bottom:1px solid var(--line)}.ads-table td:not(:first-child),.ads-table th:not(:first-child){text-align:right}.ads-table td:first-child{max-width:250px;overflow-wrap:anywhere}.ads-name{font-weight:600}.ads-type{display:block;color:var(--muted);font-size:11px;margin-top:4px}.ads-note{font-size:12px;line-height:1.55;color:var(--muted);margin-top:15px}.ads-finance{margin-top:16px;padding-top:12px;border-top:1px solid var(--line);font-size:13px;line-height:1.5}.ads-finance b{float:right}.ads-finance small{display:block;color:var(--muted);font-size:11px;margin-top:4px}.ads-source{font-size:11px;color:var(--muted);margin-top:14px;line-height:1.5}.ads-bars{display:grid;gap:12px;margin-top:16px}.ads-bar-row{display:grid;grid-template-columns:38px 1fr 80px;gap:10px;align-items:center;font-size:12px}.ads-bar{height:7px;border-radius:20px;background:var(--line);overflow:hidden}.ads-bar i{display:block;height:100%;background:linear-gradient(90deg,#ffd21f,#ff8a1f);border-radius:20px}.ads-bar-row b{text-align:right}.ads-bar-row.current{font-weight:700}
+.marketing-breakdown{margin-top:14px}.marketing-row{display:flex;justify-content:space-between;gap:16px;padding:10px 0;border-bottom:1px solid var(--line);font-size:13px}.marketing-row.total{font-weight:700}.marketing-row span:last-child{white-space:nowrap}.marketing-caption{font-size:11px;color:var(--muted);line-height:1.5;margin-top:12px}
 .ads-table td:nth-child(2),.ads-table th:nth-child(2){text-align:left}.ads-goal{font-weight:600}.ads-id{display:block;color:var(--muted);font-size:11px;margin-top:4px}
 @media(max-width:900px){.ads-hero{grid-template-columns:repeat(2,minmax(0,1fr))}.ads-layout{grid-template-columns:1fr}}
 @media(max-width:480px){.ads-stat{padding:15px}.ads-stat .val{font-size:23px}.ads-panel{padding:16px}.ads-hero{gap:9px}}
@@ -664,7 +665,7 @@ html[data-vt="nav"]::view-transition-new(root){animation:vtIn .55s cubic-bezier(
   <section class="ads-hero fade" data-view="ads" hidden id="adsHero"></section>
   <section class="ads-layout fade" data-view="ads" hidden>
     <article class="card ads-panel"><div class="ph"><span class="no">01</span><h2>Рекламные кампании</h2><span class="r">Meta · USD</span></div><div class="ads-table-wrap"><table class="ads-table"><thead><tr><th>Кампания</th><th>Цель кампании</th><th>Расход</th><th>Переходы</th><th>Новые контакты</th></tr></thead><tbody id="adsCampaigns"></tbody></table></div><div class="ads-note">Цель указана на уровне кампании Meta. «—» — Meta не вернула показатель. Новые контакты — люди, впервые написавшие компании по данным Meta.</div></article>
-    <aside><article class="card ads-panel"><div class="ph"><span class="no">02</span><h2>Расходы по месяцам</h2><span class="r">USD</span></div><div class="ads-bars" id="adsBars"></div><div class="ads-source">Источник: Meta Ads · рекламный аккаунт Turon Tour.<br>Данные за май–октябрь 2026, выгрузка 16.11.2026. Показатели сохранены на дату выгрузки и автоматически не обновляются.</div></article></aside>
+    <aside><article class="card ads-panel"><div class="ph"><span class="no">02</span><h2>Расходы по месяцам</h2><span class="r">USD</span></div><div class="ads-bars" id="adsBars"></div><div class="ads-source">Источник: Meta Ads · рекламный аккаунт Turon Tour.<br>Данные за май–октябрь 2026, выгрузка 16.11.2026. Показатели сохранены на дату выгрузки и автоматически не обновляются.</div></article><article class="card ads-panel marketing-breakdown"><div class="ph"><span class="no">03</span><h2>Маркетинг по Excel</h2><span class="r">USD</span></div><div id="marketingBreakdown"></div></article></aside>
   </section>
 
   <!-- ===== TREND VIEW ===== -->
@@ -696,6 +697,7 @@ const AD_MONTHS=[
 ];
 const money2=n=>'$'+Number(n).toLocaleString('ru-RU',{minimumFractionDigits:2,maximumFractionDigits:2});
 const intAds=n=>Number(n).toLocaleString('ru-RU');
+const MARKETING_EXCEL=[{total:950,unknown:true},{total:278,target:278},{total:786,target:586,specialist:200},{total:1277,target:577,specialist:200,videographer:500},{total:844,target:144,specialist:200,videographer:500},{total:770,target:270,videographer:500}];
 function renderAds(i){
   const m=AD_MONTHS[i];
   const cards=[['Расход на рекламу',money2(m.spend),'Meta · USD'],['Показы',intAds(m.impressions),'сколько раз показали рекламу'],['Охват',intAds(m.reach),'аккаунтов увидели рекламу'],['Переходы по ссылкам',intAds(m.clicks),'все направления'],['Новые контакты',intAds(m.contacts),'впервые написали компании']];
@@ -704,6 +706,9 @@ function renderAds(i){
   const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const campaigns=AD_CAMPAIGNS.filter(x=>Number(x.date_start.slice(5,7))===i+5).sort((a,b)=>Number(b.amount_spent.value)-Number(a.amount_spent.value));
   $('adsCampaigns').innerHTML=campaigns.map(x=>`<tr><td><span class="ads-name">${esc(x.name)}</span><span class="ads-id">ID · ${esc(x.id.slice(-6))}</span></td><td class="ads-goal">${esc(types[x.objective]||x.objective)}</td><td>${money2(x.amount_spent.value)}</td><td>${x.link_click===null?'—':intAds(x.link_click)}</td><td>${x['actions:onsite_conversion.messaging_first_reply']===null?'—':intAds(x['actions:onsite_conversion.messaging_first_reply'])}</td></tr>`).join('');
+  const marketing=MARKETING_EXCEL[i];
+  const rows=marketing.unknown?[]:[['Таргет',marketing.target],...(marketing.specialist?[['Таргетолог',marketing.specialist]]:[]),...(marketing.videographer?[['Мобилограф',marketing.videographer]]:[])];
+  $('marketingBreakdown').innerHTML=rows.map(([name,value])=>`<div class="marketing-row"><span>${name}</span><span>${money2(value)}</span></div>`).join('')+`<div class="marketing-row total"><span>Всего по Excel</span><span>${money2(marketing.total)}</span></div><div class="marketing-caption">${marketing.unknown?'Состав суммы за май не уточнён.':i>=2?'Таргет рассчитан как сумма по Excel за вычетом указанных зарплат.':'Сумма таргета по Excel.'} Расходы Meta показаны отдельно выше.</div>`;
   const max=Math.max(...AD_MONTHS.map(x=>x.spend));
   $('adsBars').innerHTML=AD_MONTHS.map((x,j)=>`<div class="ads-bar-row ${j===i?'current':''}"><span>${MONTHS[j].name.slice(0,3)}</span><span class="ads-bar"><i style="width:${x.spend/max*100}%"></i></span><b>${money2(x.spend)}</b></div>`).join('');
 }
