@@ -403,6 +403,8 @@ html[data-theme="light"] .note .lg i.lg-prev{background:linear-gradient(#3a3a3c,
 .note .lg-n{display:block;margin-top:6px;font-size:13.5px}
 .ors__flood{display:none!important}
 html:not([data-dev]) .foot .isw{display:none}
+/* standalone figures: proportional digits (tabular digits leave gaps around "1") */
+.ors__num,.ors__sub b,.tk-v,.mini .val,.lead2 .nb b,.gp .val,.best .row2 b,.conc .v,.ors__d,.tk-d{font-variant-numeric:proportional-nums;font-feature-settings:"tnum" 0,"pnum" 1}
 /* sales tile split bar: two separate segments */
 .stream .band{gap:3px;overflow:visible;height:10px}
 .stream .band i{border-radius:999px;min-width:12px}
@@ -759,6 +761,7 @@ function orbitTick(t){
     g.setAttribute('transform','rotate('+orbitAng[i].toFixed(2)+' 100 100)')});
   orbitRaf=requestAnimationFrame(orbitTick)}
 function reels(text){
+  return text.replace(/[  ]/g,'<span style="display:inline-block;width:.26em"></span>');
   return text.split('').map((c,idx)=>{const k=text.length-idx;
     if(/[0-9]/.test(c))return '<span class="ors__reel" style="--d:0;--k:'+k+'"><span class="ors__strip">'+Array.from({length:10},(_,n)=>'<span>'+n+'</span>').join('')+'</span></span>';
     if(c===' '||c===' ')return '<span style="display:inline-block;width:.26em"></span>';
