@@ -326,7 +326,7 @@ html[data-glass="1"] .ki,html[data-glass="1"] .li .bd,html[data-glass="1"] .goal
 html[data-glass="1"] .ki::before,html[data-glass="1"] .li .bd::before,html[data-glass="1"] .goal .gb::before{content:none}
 html[data-glass="1"] .ki::after,html[data-glass="1"] .li .bd::after,html[data-glass="1"] .goal .gb::after{content:"";position:absolute;inset:0;z-index:1;border-radius:10px;background:linear-gradient(150deg,rgba(255,255,255,.30),rgba(255,255,255,.07) 50%,rgba(255,255,255,.14));backdrop-filter:blur(6px) saturate(1.4);-webkit-backdrop-filter:blur(6px) saturate(1.4);border:1px solid rgba(255,255,255,.28);box-shadow:inset 0 1px 0 rgba(255,255,255,.55),inset 0 -6px 10px -6px rgba(255,255,255,.18),0 8px 14px -8px rgba(0,0,0,.8);pointer-events:none}
 html[data-glass="1"] .ki iconify-icon,html[data-glass="1"] .li .bd iconify-icon,html[data-glass="1"] .goal .gb iconify-icon{position:relative;z-index:2;color:#fff;filter:drop-shadow(0 1px 2px rgba(0,0,0,.45))}
-.foot{font-size:13.5px;color:var(--muted);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.foot{font-size:13.5px;color:var(--muted);display:flex;justify-content:flex-end;gap:12px;flex-wrap:wrap}
 
 @media (max-width:1180px){
   .kpis{grid-template-columns:1fr 1fr;grid-template-rows:auto}
@@ -534,6 +534,26 @@ html[data-theme="light"] .krw{--ors-track:rgba(0,0,0,.11)}
 .krw.kr{position:relative;width:var(--ors-s);height:var(--ors-s);padding:0;border:0;background:none;box-shadow:none;overflow:visible;display:block;gap:0}
 .cut.on .krw{--ors-ring:conic-gradient(from var(--ors-a),#b9cce4,#c8b9ea,#f0b37a,#7fd1a8,#b9cce4);--ors-face:#12154a;--ors-track:rgb(239 232 220/.14);--ors-ink:#fff;--ors-on-ink:#141216;--ors-bead:#fffaf1;--ors-tone:rgb(20 18 23/.08)}
 html[data-theme="light"] .cut.on .krw .ors__head::before{background:#fffaf1;box-shadow:0 0 0 2px #12154a,0 0 14px 2px rgba(255,255,255,.35)}
+/* ================= MOTION: sliding thumb + page transitions ================= */
+.seg{position:relative}
+.seg .thumb{position:absolute;top:4px;bottom:4px;left:0;width:0;border-radius:999px;background:#636366;box-shadow:0 1px 3px rgba(0,0,0,.4);pointer-events:none;z-index:0;will-change:transform,width;transition:transform .5s cubic-bezier(.32,.72,0,1),width .5s cubic-bezier(.32,.72,0,1)}
+html[data-theme="light"] .seg .thumb{background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.18),0 0 0 .5px rgba(0,0,0,.04)}
+.seg.js button{position:relative;z-index:1;transition:color .35s ease}
+.seg.js button.on,html[data-theme="light"] .seg.js button.on{background:none;box-shadow:none}
+/* View Transitions: header controls stay live (their thumb slides), the rest dissolves */
+#mode{view-transition-name:vt-mode}#months{view-transition-name:vt-months}#views{view-transition-name:vt-views}#theme{view-transition-name:vt-theme}
+#range{view-transition-name:vt-range}.title{view-transition-name:vt-title}.foot{view-transition-name:vt-foot}
+::view-transition-group(vt-mode),::view-transition-group(vt-months),::view-transition-group(vt-views),::view-transition-group(vt-theme){animation:none}
+::view-transition-old(vt-mode),::view-transition-old(vt-months),::view-transition-old(vt-views),::view-transition-old(vt-theme){display:none}
+::view-transition-new(vt-mode),::view-transition-new(vt-months),::view-transition-new(vt-views),::view-transition-new(vt-theme){animation:none}
+::view-transition-group(vt-range),::view-transition-group(vt-title),::view-transition-group(vt-foot){animation-duration:.45s;animation-timing-function:cubic-bezier(.32,.72,0,1)}
+::view-transition-group(root){animation-duration:.45s}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.45s;animation-timing-function:cubic-bezier(.4,0,.2,1)}
+html[data-vt="nav"]::view-transition-old(root){animation:vtOut .22s cubic-bezier(.4,0,.2,1) both}
+html[data-vt="nav"]::view-transition-new(root){animation:vtIn .55s cubic-bezier(.16,1,.3,1) both}
+@keyframes vtOut{to{opacity:0}}
+@keyframes vtIn{from{opacity:0;transform:translateY(14px)}}
+@media (prefers-reduced-motion:reduce){.seg .thumb{transition:none}}
 </style>
 </head>
 <body>
@@ -627,7 +647,7 @@ html[data-theme="light"] .cut.on .krw .ors__head::before{background:#fffaf1;box-
     </article>
   </section>
 
-  <div class="foot"><span>Показатели относятся к месяцу бронирования, а не фактического вылета. Суммы в долларах США.</span><span class="isw" id="ddsw"><i>Стрелка</i><button data-d="trend">Тренд</button><button data-d="diag">Диагональ</button><button data-d="tri">Треугольник</button></span><span class="isw" id="kpisw"><i>Плитки</i><button data-k="">Сейчас</button><button data-k="ring">Orbit</button></span><span class="isw" id="glasssw"><i>Плашка</i><button data-g="">Сейчас</button><button data-g="1">Glass</button></span><span class="isw" id="barsw"><i>Полоса</i><button data-b="">Сейчас</button><button data-b="eq">Prop Firm</button><button data-b="gv">Stats Close Up</button><button data-b="glow">Свечение</button><button data-b="neon">Неон</button><button data-b="slant">Скос</button></span><span class="isw" id="iconsw"><i>Иконки</i><button data-k="solar">Solar</button><button data-k="ph">Phosphor</button><button data-k="lucide">Lucide</button><button data-k="tabler">Tabler</button><button data-k="huge">Hugeicons</button></span><span id="footR"></span></div>
+  <div class="foot"><span class="isw" id="ddsw"><i>Стрелка</i><button data-d="trend">Тренд</button><button data-d="diag">Диагональ</button><button data-d="tri">Треугольник</button></span><span class="isw" id="kpisw"><i>Плитки</i><button data-k="">Сейчас</button><button data-k="ring">Orbit</button></span><span class="isw" id="glasssw"><i>Плашка</i><button data-g="">Сейчас</button><button data-g="1">Glass</button></span><span class="isw" id="barsw"><i>Полоса</i><button data-b="">Сейчас</button><button data-b="eq">Prop Firm</button><button data-b="gv">Stats Close Up</button><button data-b="glow">Свечение</button><button data-b="neon">Неон</button><button data-b="slant">Скос</button></span><span class="isw" id="iconsw"><i>Иконки</i><button data-k="solar">Solar</button><button data-k="ph">Phosphor</button><button data-k="lucide">Lucide</button><button data-k="tabler">Tabler</button><button data-k="huge">Hugeicons</button></span><span id="footR"></span></div>
 </div>
 <script>
 /* ===== данные: итоги месяцев ===== */
@@ -767,7 +787,9 @@ function renderFinance(i){
 
 
 const paintTheme=()=>{const t=document.documentElement.dataset.theme||'dark';document.querySelectorAll('#theme button').forEach(b=>b.classList.toggle('on',b.dataset.t===t))};
-document.addEventListener('click',e=>{const b=e.target.closest('#theme button');if(b){document.documentElement.dataset.theme=b.dataset.t;try{localStorage.setItem('turon-theme',b.dataset.t)}catch(x){}paintTheme()}});
+document.addEventListener('click',e=>{const b=e.target.closest('#theme button');if(b){if(b.dataset.t===document.documentElement.dataset.theme)return;try{localStorage.setItem('turon-theme',b.dataset.t)}catch(x){}
+  const apply=()=>{document.documentElement.dataset.theme=b.dataset.t;paintTheme();if(typeof view!=='undefined'&&cur>=0&&view==='trend')renderTrend(cur)};
+  paintTheme();document.querySelectorAll('#theme button').forEach(x=>x.classList.toggle('on',x===b));placeThumbs();swap(apply,false)}});
 paintTheme();
 document.addEventListener('click',e=>{const b=e.target.closest('#ddsw button');if(b){ddSet=b.dataset.d;try{localStorage.setItem('turon-dd',ddSet)}catch(x){}paintIcons()}});
 let kpiSet='ring';
@@ -991,16 +1013,38 @@ function paint(){
   $('footR').innerHTML=view==='trend'?`${RM().length} ${pl(RM().length,'месяц','месяца','месяцев')}${VB}2026`:`${m.name} 2026${VB}${cur+1} из ${MONTHS.length}`;
   document.querySelectorAll('#months button').forEach((b,j)=>b.classList.toggle('on',j===cur));
   document.querySelectorAll('#views button').forEach(b=>b.classList.toggle('on',b.dataset.v===view));
+  placeThumbs();
   document.querySelectorAll('[data-view]').forEach(n=>n.hidden=n.dataset.view!==view);
   if(view==='finance')renderFinance(cur);else if(view==='structure')renderStructure(cur);else renderTrend(cur);
   paintIcons();
   history.replaceState(null,'','#'+m.id+(view==='structure'?'/'+cut:view==='trend'?'/trend':''));
 }
-function go(i,v,animate=true){if(i<0||i>=MONTHS.length)return;const changed=i!==cur||v!==view;if(!changed)return;
-  const first=cur<0;cur=i;view=v;tailOpen=false;if(v!=='trend')lastMV=v;
-  if(first||!animate){paint();return}
+/* thumbs of segmented controls */
+function placeThumbs(){document.querySelectorAll('.seg').forEach(s=>{const on=s.querySelector(':scope>button.on');if(!on)return;
+  let t=s.querySelector(':scope>.thumb');if(!t){t=document.createElement('span');t.className='thumb';s.prepend(t);s.classList.add('js')}
+  if(!on.offsetWidth)return;
+  const jump=!t.dataset.ok;
+  if(jump)t.style.transition='none';
+  t.style.width=on.offsetWidth+'px';t.style.transform='translateX('+on.offsetLeft+'px)';
+  if(jump){t.offsetWidth;t.style.transition='';t.dataset.ok='1'}})}
+function syncCtl(){
+  document.querySelectorAll('#mode button').forEach(b=>b.classList.toggle('on',(b.dataset.m==='period')===(view==='trend')));
+  document.querySelectorAll('#months button').forEach((b,j)=>b.classList.toggle('on',j===cur));
+  document.querySelectorAll('#views button').forEach(b=>b.classList.toggle('on',b.dataset.v===view));
+  placeThumbs()}
+addEventListener('resize',()=>{document.querySelectorAll('.seg>.thumb').forEach(t=>delete t.dataset.ok);placeThumbs()});
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{document.querySelectorAll('.seg>.thumb').forEach(t=>delete t.dataset.ok);placeThumbs()});
+/* page swap: View Transitions where available (live controls, dissolving content), soft fade otherwise */
+const VT=!!document.startViewTransition&&!matchMedia('(prefers-reduced-motion:reduce)').matches;
+function swap(fn,nav){
+  if(VT){const h=document.documentElement;if(nav)h.dataset.vt='nav';else delete h.dataset.vt;
+    const t=document.startViewTransition(fn);t.finished.finally(()=>{delete h.dataset.vt});return}
   const parts=document.querySelectorAll('.fade:not([hidden])');parts.forEach(n=>n.classList.add('out'));
-  setTimeout(()=>{paint();document.querySelectorAll('.fade').forEach(n=>n.classList.remove('out'))},170);}
+  setTimeout(()=>{fn();document.querySelectorAll('.fade').forEach(n=>n.classList.remove('out'))},170)}
+function go(i,v,animate=true){if(i<0||i>=MONTHS.length)return;const changed=i!==cur||v!==view;if(!changed)return;
+  const first=cur<0,nav=v!==view;cur=i;view=v;tailOpen=false;if(v!=='trend')lastMV=v;
+  if(first||!animate){paint();return}
+  syncCtl();swap(paint,nav)}
 $('months').innerHTML=MONTHS.map((m,i)=>`<button data-i="${i}">${m.name.slice(0,3)}</button>`).join('');
 document.querySelectorAll('#months button').forEach(b=>b.addEventListener('click',()=>go(+b.dataset.i,view)));
 document.querySelectorAll('#views button').forEach(b=>b.addEventListener('click',()=>go(cur,b.dataset.v)));
@@ -1008,9 +1052,9 @@ document.querySelectorAll('#mode button').forEach(b=>b.addEventListener('click',
 const rf=$('rFrom'),rt=$('rTo'),rOpts=MONTHS.map((m,i)=>`<option value="${i}">${m.name}</option>`).join('');
 rf.innerHTML=rOpts;rt.innerHTML=rOpts;
 function syncRange(){rf.value=rA;rt.value=rB}
-[rf,rt].forEach(s=>s.addEventListener('change',()=>{rA=+rf.value;rB=+rt.value;if(rA>rB){if(s===rf)rB=rA;else rA=rB}pxBars=[];pxHover=-1;paint()}));
+[rf,rt].forEach(s=>s.addEventListener('change',()=>{rA=+rf.value;rB=+rt.value;if(rA>rB){if(s===rf)rB=rA;else rA=rB}pxBars=[];pxHover=-1;swap(paint,false)}));
 document.querySelectorAll('.cut').forEach(b=>b.addEventListener('click',()=>{if(cut===b.dataset.c)return;cut=b.dataset.c;tailOpen=false;
-  const sg=document.querySelector('.sgrid');sg.classList.add('out');setTimeout(()=>{paint();sg.classList.remove('out')},150)}));
+  swap(paint,false)}));
 addEventListener('keydown',e=>{if(e.target.closest&&e.target.closest('input,textarea'))return;if(view==='trend')return;if(e.key==='ArrowRight')go(cur+1,view);if(e.key==='ArrowLeft')go(cur-1,view)});
 fitScale();
 /* start: #jun, #jun/structure, #jun/structure/mgr — also #jun/mgr */
