@@ -403,6 +403,15 @@ html[data-theme="light"] .note .lg i.lg-prev{background:linear-gradient(#3a3a3c,
 .note .lg-n{display:block;margin-top:6px;font-size:13.5px}
 .ors__flood{display:none!important}
 html:not([data-dev]) .foot .isw{display:none}
+/* tall windows (large monitors, zoomed-out browser): keep content compact instead of stretching rows */
+@media (min-height:1000px){
+  .shell{min-height:0;grid-template-rows:none!important;align-content:start}
+  .list,.goals{justify-content:flex-start!important}
+  .goals{gap:18px}
+  .li{padding-top:12px;padding-bottom:12px}
+  .trows{flex:none}
+  .side{align-content:start}
+}
 /* small secondary text: same wide face as the tile captions */
 .li em,.mirror>span,.ph .r,.ph .no,.thead span,.tt-head span{font-family:Unbounded,Geologica,sans-serif;font-weight:500;font-style:normal}
 .li em{font-size:12.5px;letter-spacing:.01em}
