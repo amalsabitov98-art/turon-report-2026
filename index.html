@@ -404,7 +404,18 @@ html[data-theme="light"] .note .lg i.lg-prev{background:linear-gradient(#3a3a3c,
 .ors__flood{display:none!important}
 html:not([data-dev]) .foot .isw{display:none}
 /* thin vertical separator instead of dots */
-.vb{display:inline-block;width:1px;height:.95em;margin:0 .65em;background:currentColor;opacity:.4;vertical-align:-.14em}
+.vb{display:inline-block;margin:0 .5em;opacity:.45;font-style:normal}
+.vb::before{content:"/"}
+/* sales tile: everything centred, wide caption */
+.sales .dots{display:flex;justify-content:center;margin-top:10px}
+.sales .sub{text-align:center;margin-top:10px}
+.sales .sub .l1{font-family:Unbounded,Geologica,sans-serif;font-size:10px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;opacity:.9;white-space:nowrap}
+.sales .stream{padding-top:14px}
+.sales .sub .l2{margin-top:7px;font-size:16px;white-space:normal}
+.sales .sub .l3{margin-top:3px;font-size:14.5px;font-weight:400}
+.sales .stream .cap{justify-content:center;gap:40px}
+.sales .stream .cap span{display:flex;flex-direction:column;align-items:center;gap:3px;text-align:center;font-family:Unbounded,Geologica,sans-serif;font-size:10.5px;font-weight:500;letter-spacing:.06em;text-transform:uppercase}
+.sales .stream .cap b{font-family:Geologica,sans-serif;font-size:16px;font-weight:600;letter-spacing:0;text-transform:none}
 .sales .sub .l1,.sales .sub .l2,.gp .sub .l1,.gp .sub .l2{display:block}
 .sales .sub .l1,.gp .sub .l1{font-size:13.5px;opacity:.82}
 .sales .sub .l2,.gp .sub .l2{margin-top:5px;font-size:15px;font-weight:500;color:#e4e7ff;white-space:nowrap}
@@ -692,7 +703,7 @@ function renderFinance(i){
   const m=MONTHS[i],p=MONTHS[i-1];
   renderRings(m,p);
   $('dots').innerHTML=dotNum(usd(m.sales));$('dots').setAttribute('aria-label',usd(m.sales));
-  $('salesSub').innerHTML=`<span class="l1">Общая стоимость проданных пакетов</span><span class="l2">${m.bookings} ${pl(m.bookings,'бронь','брони','броней')}`+(p?`${VB}${dTxt(chg(m.sales,p.sales))} к прошлому месяцу`:'')+`</span>`;
+  $('salesSub').innerHTML=`<span class="l1">Общая стоимость проданных пакетов</span><span class="l2">${m.bookings} ${pl(m.bookings,'бронь','брони','броней')}</span>`+(p?`<span class="l2 l3">${dTxt(chg(m.sales,p.sales))} к прошлому месяцу</span>`:'');
   $('bNet').style.flex=m.net;$('bGp').style.flex=m.gp;$('capNet').textContent=usd(m.net);$('capGp').textContent=usd(m.gp);
   $('gpVal').textContent=usd(m.gp);$('gpChip').textContent=`${p1(m.margin)}% от продаж`;
   $('gpSub').innerHTML=p?`<span class="l1">Финансовый результат месяца</span><span class="l2">${dTxt(chg(m.gp,p.gp))} к прошлому месяцу</span>`:'<span class="l1">Финансовый результат месяца</span>';
