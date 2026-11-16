@@ -403,6 +403,10 @@ html[data-theme="light"] .note .lg i.lg-prev{background:linear-gradient(#3a3a3c,
 .note .lg-n{display:block;margin-top:6px;font-size:13.5px}
 .ors__flood{display:none!important}
 html:not([data-dev]) .foot .isw{display:none}
+/* ring tiles: group centred in the tile, text column vertically centred on the ring */
+.kr:not(.big){justify-content:center;gap:20px}
+.kr:not(.big) .ors__txt{align-items:flex-start;justify-content:center;width:180px;flex:none}
+.kr:not(.big) .ors__lbl{white-space:nowrap}
 /* thin vertical separator instead of dots */
 .vb{display:inline-block;margin:0 .5em;opacity:.45;font-style:normal}
 .vb::before{content:"/"}
@@ -793,6 +797,7 @@ function renderRings(m,p){
     {slot:'margin',label:'Маржа',txt:p1(m.margin),unit:'%',cur:m.margin,prev:p&&p.margin,fmt:v=>p1(v)+'%',orbit:'МАРЖА · ОТ ПРОДАЖ'},
     {slot:'avg',label:'Средний чек',txt:usd(m.avg),cur:m.avg,prev:p&&p.avg,fmt:usd,orbit:'СРЕДНИЙ ЧЕК · НА ТУРИСТА'}
   ];
+  const SMALLFS=Math.min(...cards.filter(x=>!x.big).map(x=>{const L=x.txt.length+(x.unit?0.5:0);return Math.min(104*.26,(104*(1-2*(.04+.075))-10)/(L*.7))}));
   $('kring').innerHTML=cards.map((c,i)=>{
     const dial=c.big?148:104, share=c.prev?Math.min(1,c.cur/Math.max(c.cur,c.prev)):1;
     const d=c.prev?chg(c.cur,c.prev):null;
