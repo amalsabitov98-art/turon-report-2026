@@ -404,8 +404,10 @@ html[data-theme="light"] .note .lg i.lg-prev{background:linear-gradient(#3a3a3c,
 .ors__flood{display:none!important}
 html:not([data-dev]) .foot .isw{display:none}
 /* sales tile split bar: two separate segments */
-.stream .band{gap:4px;overflow:visible;height:30px}
-.stream .band i{border-radius:10px;min-width:18px}
+.stream .band{gap:3px;overflow:visible;height:10px}
+.stream .band i{border-radius:999px;min-width:12px}
+.stream .cap span:last-child b{color:#f2cf8e}
+.stream{padding-top:20px}
 /* deltas: coloured text with a trend icon, no pill */
 .kr .ors__d>span,.tk .tk-d>span:first-child{padding:0!important;background:none!important;border-radius:0}
 .kr .ors__d:has(>.flat){display:none}
@@ -532,7 +534,7 @@ html[data-theme="light"] .cut.on .krw .ors__head::before{background:#fffaf1;box-
       <div class="dots" id="dots" role="img"></div>
       <div class="sub" id="salesSub"></div>
       <div class="stream">
-        <div class="band"><i id="bNet" style="background:linear-gradient(90deg,rgba(255,255,255,.14),rgba(255,255,255,.36))"></i><i id="bGp" style="background:linear-gradient(90deg,#f3d9a8,#e9c07a)"></i></div>
+        <div class="band"><i id="bNet" style="background:linear-gradient(90deg,rgba(255,255,255,.78),rgba(255,255,255,.92))"></i><i id="bGp" style="background:#f2cf8e"></i></div>
         <div class="cap"><span>Нетто партнёрам <b id="capNet"></b></span><span>Наша прибыль <b id="capGp"></b></span></div>
       </div>
     </article>
