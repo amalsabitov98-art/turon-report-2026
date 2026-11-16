@@ -406,9 +406,9 @@ html:not([data-dev]) .foot .isw{display:none}
 /* standalone figures: proportional digits (tabular digits leave gaps around "1") */
 .ors__num,.ors__sub b,.tk-v,.mini .val,.lead2 .nb b,.gp .val,.best .row2 b,.conc .v,.ors__d,.tk-d{font-variant-numeric:proportional-nums;font-feature-settings:"tnum" 0,"pnum" 1}
 /* sales tile split bar: two separate segments */
-.stream .band{gap:3px;overflow:visible;height:10px}
-.stream .band i{border-radius:999px;min-width:12px}
-.stream .cap span:last-child b{color:#f2cf8e}
+.stream .band{gap:3px;overflow:visible;height:26px;padding:3px;border:2px solid #f0c677;border-radius:999px;box-sizing:border-box;background:#0b0d2a;box-shadow:0 0 12px -2px rgba(240,198,119,.75)}
+.stream .band i{border-radius:999px;min-width:14px}
+.stream .cap span:last-child b{color:#ffe9bd}
 .stream{padding-top:20px}
 /* deltas: coloured text with a trend icon, no pill */
 .kr .ors__d>span,.tk .tk-d>span:first-child{padding:0!important;background:none!important;border-radius:0}
@@ -536,7 +536,7 @@ html[data-theme="light"] .cut.on .krw .ors__head::before{background:#fffaf1;box-
       <div class="dots" id="dots" role="img"></div>
       <div class="sub" id="salesSub"></div>
       <div class="stream">
-        <div class="band"><i id="bNet" style="background:linear-gradient(90deg,rgba(255,255,255,.78),rgba(255,255,255,.92))"></i><i id="bGp" style="background:#f2cf8e"></i></div>
+        <div class="band"><i id="bNet" style="background:linear-gradient(90deg,#ffd978,#f0ad45)"></i><i id="bGp" style="background:linear-gradient(90deg,#fff6e0,#ffe9bd)"></i></div>
         <div class="cap"><span>Нетто партнёрам <b id="capNet"></b></span><span>Наша прибыль <b id="capGp"></b></span></div>
       </div>
     </article>
